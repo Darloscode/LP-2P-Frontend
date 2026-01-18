@@ -4,7 +4,6 @@ import { inputCreateUserConfig } from "@/config/userFormConfig";
 import Button from "@mui/material/Button";
 import UserInput from "@forms/UserInput";
 import { User } from "@/types/User";
-import { useRoleData } from "@/observer/RoleDataContext";
 import { getUsers } from "@/utils/utils";
 import Progress from "@components/Progress";
 
@@ -32,7 +31,7 @@ export default function UserForm({
   onRoleChange,
 }: UserFormProps) {
   const methods = useForm<User>();
-  const { data, loading } = useRoleData();
+  const data: any = [];
   const users: User[] = getUsers(data);
 
   useEffect(() => {
@@ -120,8 +119,6 @@ export default function UserForm({
     }
     return "Siguiente";
   };
-
-  if (loading) return <Progress />;
 
   return (
     <FormProvider {...methods}>

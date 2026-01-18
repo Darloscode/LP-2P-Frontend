@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { inputCreateUserAdminConfig } from "@/config/userFormAdminConfig";
-import { useRoleData } from "@/observer/RoleDataContext";
 import { User } from "@/types/User";
 import { getUsers } from "@utils/utils";
 import Button from "@mui/material/Button";
@@ -35,7 +34,7 @@ export default function UserFormAdmin({
   load,
 }: UserFormProps) {
   const methods = useForm<User>();
-  const { data, loading } = useRoleData();
+  const data: any = [];
   const users: User[] = getUsers(data);
 
   useEffect(() => {
@@ -116,8 +115,6 @@ export default function UserFormAdmin({
     }
     return "Siguiente";
   };
-
-  if (loading) return <Progress />;
 
   return (
     <FormProvider {...methods}>

@@ -8,6 +8,8 @@ import CreateService from "@/components/CreateService";
 import CreateUserAdmin from "@admin/CreateUserAdmin";
 import Appointment from "@/components/admin/Appointments";
 import EditUserAdmin from "@/components/admin/EditUserAdmin";
+import AppointmentView from "@/components/admin/AppointmentView";
+import CheckoutView from "@/components/CheckoutView";
 
 export const AdminRoutes = [
   { path: "/", element: <ControlPanel /> },
@@ -19,5 +21,10 @@ export const AdminRoutes = [
   { path: "/nuevo-servicio", element: <CreateService /> },
   { path: "/nuevo-usuario", element: <CreateUserAdmin /> },
   { path: "/citas", element: <Appointment /> },
+  { path: "/nueva-cita", element: <AppointmentView /> },
+  {
+    path: "/pago/:serviceId/:workerScheduleId/:clientId",
+    element: <CheckoutView />,
+  },
   ...SharedRoutes,
 ];

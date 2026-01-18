@@ -3,7 +3,7 @@ import { GridRowSelectionModel } from "@mui/x-data-grid";
 import { Receipt } from "@/types/Receipt";
 import { GridColDef } from "@mui/x-data-grid";
 import { getReceipt, handleDownloadInvoice } from "@utils/utils";
-import { useRoleData } from "@/observer/RoleDataContext";
+
 import Button from "@mui/material/Button";
 import InvoiceView from "@components/InvoiceView";
 import Table from "@components/Table";
@@ -77,7 +77,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function ReceiptList() {
-  const { data, loading } = useRoleData();
+  const data: any = [];
 
   const receiptList: Receipt[] = getReceipt(data);
 
@@ -88,7 +88,7 @@ export default function ReceiptList() {
   useEffect(() => {
     if (rowSelection.length > 0) {
       const selectedInvoice = receiptList.find(
-        (item) => item.receipt.receipt_id === rowSelection[0]
+        (item) => item.receipt.receipt_id === rowSelection[0],
       );
       if (selectedInvoice) {
         setReceipt(selectedInvoice);
@@ -97,8 +97,6 @@ export default function ReceiptList() {
       setReceipt(null);
     }
   }, [rowSelection]);
-
-  if (loading) return <Progress />;
 
   const flattenedRows: FlattenedReceipt[] = receiptList.map((r) => ({
     id: r.receipt.receipt_id,

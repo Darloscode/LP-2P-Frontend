@@ -1,14 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
-import AppointmentCreation from "@components/AppointmentCreation";
+import AppointmentCreation from "@admin/AppointmentCreation";
 import Header from "@components/Header";
 
-interface AppointmentViewProp {
-  isClient: boolean;
-}
-
-export default function AppointmentView({ isClient }: AppointmentViewProp) {
+export default function AppointmentView() {
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);
@@ -25,7 +21,7 @@ export default function AppointmentView({ isClient }: AppointmentViewProp) {
           />
         </Grid>
         <Grid size={12}>
-          <AppointmentCreation isClient={isClient} />
+          <AppointmentCreation />
         </Grid>
       </Grid>
     </Box>

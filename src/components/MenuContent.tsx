@@ -11,12 +11,8 @@ import Stack from "@mui/material/Stack";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
-import AssignmentIndRoundedIcon from "@mui/icons-material/AssignmentIndRounded";
-import SwitchAccountRoundedIcon from "@mui/icons-material/SwitchAccountRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
-import PaymentRoundedIcon from "@mui/icons-material/PaymentRounded";
-import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 
 type ListItem = {
   text: string;
@@ -29,50 +25,7 @@ const adminListItems = [
   { text: "Usuarios", route: "/usuarios", icon: <GroupRoundedIcon /> },
   { text: "Servicios ", route: "/servicios", icon: <AssignmentRoundedIcon /> },
   { text: "Citas ", route: "/citas", icon: <CalendarMonthRoundedIcon /> },
-];
-
-const staffListItems = [
-  { text: "Vista General", route: "/", icon: <HomeRoundedIcon /> },
-  {
-    text: "Profesionales",
-    route: "/profesionales",
-    icon: <SwitchAccountRoundedIcon />,
-  },
-  {
-    text: "Pacientes",
-    route: "/pacientes",
-    icon: <AssignmentIndRoundedIcon />,
-  },
-  { text: "Citas", route: "/citas", icon: <CalendarMonthRoundedIcon /> },
-  { text: "Recibos", route: "/recibos", icon: <ReceiptLongRoundedIcon /> },
-  { text: "Pagos", route: "/pagos ", icon: <PaymentRoundedIcon /> },
-  { text: "Servicios ", route: "/servicios", icon: <AssignmentRoundedIcon /> },
-];
-
-const professionalListItems = [
-  { text: "Vista General", route: "/", icon: <HomeRoundedIcon /> },
-  {
-    text: "Pacientes",
-    route: "/pacientes",
-    icon: <AssignmentIndRoundedIcon />,
-  },
-  { text: "Citas", route: "/citas", icon: <CalendarMonthRoundedIcon /> },
-];
-
-const clientListItems = [
-  { text: "Vista General", route: "/", icon: <HomeRoundedIcon /> },
-  {
-    text: "Nueva cita",
-    route: "/agendar-cita",
-    icon: <CalendarMonthRoundedIcon />,
-  },
-  { text: "Recibos", route: "/recibos", icon: <ReceiptLongRoundedIcon /> },
-  {
-    text: "Servicios",
-    route: "/consultarServicios",
-    icon: <AssignmentRoundedIcon />,
-  },
-  { text: "Reportes", route: "/reportes", icon: <ArticleRoundedIcon /> },
+  { text: "Nueva cita ", route: "/nueva-cita", icon: <EditCalendarIcon /> },
 ];
 
 export default function MenuContent() {
@@ -82,12 +35,6 @@ export default function MenuContent() {
 
   if (userRole === "Admin") {
     mainListItems = adminListItems;
-  } else if (userRole === "Staff") {
-    mainListItems = staffListItems;
-  } else if (userRole === "Professional") {
-    mainListItems = professionalListItems;
-  } else if (userRole === "Client") {
-    mainListItems = clientListItems;
   } else {
     mainListItems = [];
   }

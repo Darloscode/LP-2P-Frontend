@@ -32,7 +32,7 @@ export default function DateCalendarValue({
     availableSchedules
       .filter((ws) => ws.schedule.date === selectedDate.format("YYYY-MM-DD"))
       .sort((a, b) =>
-        a.schedule.start_time.localeCompare(b.schedule.start_time)
+        a.schedule.start_time.localeCompare(b.schedule.start_time),
       );
 
   const shouldDisableDate = (day: Dayjs) => {
@@ -46,7 +46,7 @@ export default function DateCalendarValue({
 
   const handleHourChange = (
     _: React.MouseEvent<HTMLElement>,
-    newWorkerScheduleId: string | null
+    newWorkerScheduleId: string | null,
   ) => {
     if (newWorkerScheduleId === null) return;
     const id = parseInt(newWorkerScheduleId);
@@ -77,7 +77,7 @@ export default function DateCalendarValue({
         className="flex flex-wrap justify-center w-3/5 mt-4"
       >
         {schedulesForSelectedDate && schedulesForSelectedDate.length > 0 ? (
-          schedulesForSelectedDate.map((ws) => {
+          schedulesForSelectedDate.map((ws: WorkerScheduleResponse) => {
             const label = `${ws.schedule.start_time.slice(0, 5)} - ${ws.schedule.end_time.slice(0, 5)}`;
             return (
               <ToggleButton

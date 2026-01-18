@@ -1,4 +1,3 @@
-import { useRoleData } from "@/observer/RoleDataContext";
 import { ServiceResponse } from "@/typesResponse/ServiceResponse";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -9,22 +8,10 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 
 interface ReviewProps {
-  service_id: number;
+  service: ServiceResponse;
 }
 
-export default function Review({ service_id }: ReviewProps) {
-  const { data, loading } = useRoleData();
-  const [service, setService] = useState<ServiceResponse>();
-
-  useEffect(() => {
-    if (!loading && data.services) {
-      const found = data.services.find(
-        (s: ServiceResponse) => s.service_id === service_id
-      );
-      setService(found);
-    }
-  }, [loading, data.services, service_id]);
-
+export default function Review({ service }: ReviewProps) {
   return (
     <Stack spacing={2}>
       <List disablePadding>

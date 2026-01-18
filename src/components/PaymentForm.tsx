@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -10,19 +9,17 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
-import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import Grid from "@mui/material/Grid2";
 import BancoPacifico from "@assets/BP.jpeg";
 import { FileData } from "@/types/FileData";
 import UploadButton from "@buttons/UploadButton";
 import { Edit, UploadFile } from "@mui/icons-material";
-import { useRoleData } from "@/observer/RoleDataContext";
 import { ServiceResponse } from "@/typesResponse/ServiceResponse";
 
 interface PaymentFormProps {
   setFile: (valid: FileData) => void;
   setIsValid: (valid: boolean) => void;
-  service_id: number;
+  service: ServiceResponse;
 }
 
 const Card = styled(MuiCard)<{ selected?: boolean }>(({ theme }) => ({
@@ -59,13 +56,11 @@ const Card = styled(MuiCard)<{ selected?: boolean }>(({ theme }) => ({
 }));
 
 export default function PaymentForm({
-  service_id,
+  service,
   setIsValid,
   setFile,
 }: PaymentFormProps) {
-  const { data, loading } = useRoleData();
   const [signature, setSignature] = useState<FileData | null>(null);
-  const [service, setService] = useState<ServiceResponse>();
 
   // Validación en tiempo real
   useEffect(() => {
@@ -74,12 +69,6 @@ export default function PaymentForm({
       setFile(signature);
     }
     setIsValid(allFilled);
-    if (!loading && data.services) {
-      const found = data.services.find(
-        (s: ServiceResponse) => s.service_id === service_id
-      );
-      setService(found);
-    }
   }, [signature]);
 
   return (
@@ -132,16 +121,11 @@ export default function PaymentForm({
         </RadioGroup>
       </FormControl>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        <Alert severity="warning" icon={<WarningRoundedIcon />}>
-          Recuerde: una vez que suba su comprobante de pago, el personal
-          administrativo revisará y aprobará el comprobante. Cuando esto ocurra,
-          su cita quedará confirmada.
-        </Alert>
         <Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
           Total a Pagar
         </Typography>
         <Typography variant="body1" gutterBottom>
-          {service?.price}
+          {service.price}
         </Typography>
         <Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
           Cuenta Bancaria

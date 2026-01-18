@@ -1,11 +1,10 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { AppointmentRequest } from "@/typesRequest/AppointmentRequest";
+
 import { FileData } from "@/types/FileData";
 import { ServiceResponse } from "@/typesResponse/ServiceResponse";
-import { useRoleData } from "@/observer/RoleDataContext";
-import { getAuthenticatedUserID } from "@/utils/store";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
@@ -18,98 +17,99 @@ import Steps from "@components/Steps";
 import Divider from "@mui/material/Divider";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import Success from "@components/Success";
-import appointmentAPI from "@API/appointmentAPI";
-import Progress from "@components/Progress";
-import { getAppointments, uploadToCloudinary } from "@/utils/utils";
+import { uploadToCloudinary } from "@/utils/utils";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
+import apiURL from "@/API/apiConfig";
+import axios from "axios";
+import { AppointmentRequest } from "@/typesRequest/AppointmentRequest";
 
 const steps = ["Detalles de Pago", "Revisar cita"];
 
-interface CheckoutViewProp {
-  isClient: boolean;
-}
-
-export default function CheckoutView({ isClient }: CheckoutViewProp) {
-  const {
-    data,
-    loading,
-    refreshServices,
-    refreshPersons,
-    refreshUserAccounts,
-    refreshRoles,
-    refreshProfessionals,
-    refreshSchedules,
-    refreshAppointments,
-    refreshWorkerSchedules,
-  } = useRoleData();
-
-  if (loading) return <Progress />;
-
-  const services: ServiceResponse[] = data.services;
-
+export default function CheckoutView() {
   const navigate = useNavigate();
+
+  const [service, setService] = useState<ServiceResponse>();
   const [activeStep, setActiveStep] = useState(0);
   const [isPaymentValid, setIsPaymentValid] = useState(false);
-
   const [open, setOpen] = useState(false);
-
   const [file, setFile] = useState<FileData | null>(null);
-  const { serviceId, scheduleId, clientId } = useParams();
+  const [isLoading, setIsLoading] = useState(true); // Estado de carga inicial
+  const [isSaving, setIsSaving] = useState(false); // Estado de guardado
 
-  // Opcional: convertirlos a número si los necesitas como enteros
+  const { serviceId, workerScheduleId, clientId } = useParams();
+
   const parsedServiceId = parseInt(serviceId || "", 10);
-  const parsedScheduleId = parseInt(scheduleId || "", 10);
+  const parsedWorkerScheduleId = parseInt(workerScheduleId || "", 10);
   const parsedClientId = parseInt(clientId || "", 10);
 
-  const [load, setLoad] = useState(false);
+  useEffect(() => {
+    const fetchAllData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        setIsLoading(true);
+
+        const [servicesData] = await Promise.all([
+          axios.get(`${apiURL}/services`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        const services: ServiceResponse[] = servicesData.data;
+        const service = services.find((s) => s.service_id === parsedServiceId);
+        setService(service);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [parsedServiceId]);
 
   const handleOpen = async () => {
-    if (file != null) {
-      setLoad(true);
-      const selectedService = services.find(
-        (service) => service.service_id === parsedServiceId
-      );
+    if (file != null && service != null) {
+      setIsSaving(true);
 
-      // 2. Subir a Cloudinary
-      const uploadedFileUrl = await uploadToCloudinary(file);
+      try {
+        // Subir a Cloudinary
+        const uploadedFileUrl = await uploadToCloudinary(file);
 
-      const hardcodedPersonId = isClient
-        ? getAuthenticatedUserID()
-        : parsedClientId; // Cliente
+        const dataSend: AppointmentRequest = {
+          service_id: parsedServiceId,
+          client_id: parsedClientId,
+          scheduled_by: parsedClientId, // o el ID del usuario logueado
+          worker_schedule_id: parsedWorkerScheduleId,
+          payment_status_id: 1,
+          appointment_status_id: 1,
+          payment_file: uploadedFileUrl,
+          created_by: "system",
+        };
 
-      const hardcodedScheduledBy = 5;
-      const hardcodedServicePrice = selectedService!.price;
-      const hardcodedTotalAmount = selectedService!.price;
-      const hardcodedPaymentType = "Transferencia";
-      const hardcodedAccountNumber = 987654321;
+        const token = localStorage.getItem("token");
 
-      const dataSend: AppointmentRequest = {
-        payment_data: {
-          type: hardcodedPaymentType,
-          number: hardcodedAccountNumber,
-          file: uploadedFileUrl,
-        },
-        payment: {
-          person_id: Number(hardcodedPersonId),
-          service_id: Number(parsedServiceId),
-          service_price: Number(hardcodedServicePrice),
-          total_amount: Number(hardcodedTotalAmount),
-        },
-        scheduled_by: hardcodedScheduledBy,
-        worker_schedule_id: parsedScheduleId,
-      };
-      await appointmentAPI.createAppointment(dataSend);
-      await refreshServices();
-      await refreshPersons();
-      await refreshUserAccounts();
-      await refreshRoles();
-      await refreshProfessionals();
-      await refreshSchedules();
-      await refreshAppointments();
-      await refreshWorkerSchedules();
-      setActiveStep(activeStep + 1);
-      setLoad(false);
-      setOpen(true);
+        await axios.post(`${apiURL}/appointments`, dataSend, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Appointment created successfully");
+        setActiveStep(activeStep + 1);
+        setOpen(true);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log("Error de validación:", error.response?.data);
+          alert("Error al crear la cita. Por favor intente nuevamente.");
+        }
+      } finally {
+        setIsSaving(false);
+      }
+    } else {
+      console.error("File is null or missing data");
+      alert("Por favor suba el comprobante de pago");
     }
   };
 
@@ -123,13 +123,13 @@ export default function CheckoutView({ isClient }: CheckoutViewProp) {
       case 0:
         return (
           <PaymentForm
-            service_id={parsedServiceId}
+            service={service!}
             setIsValid={setIsPaymentValid}
             setFile={setFile}
           />
         );
       case 1:
-        return <Review service_id={parsedServiceId} />;
+        return <Review service={service!} />;
       default:
         throw new Error("Unknown step");
     }
@@ -146,7 +146,39 @@ export default function CheckoutView({ isClient }: CheckoutViewProp) {
   const handleBackPage = () => {
     navigate(-1);
   };
-  if (loading) return <Progress />;
+
+  // Mostrar loading mientras se cargan los datos iniciales
+  if (isLoading) {
+    return (
+      <Box
+        className="box-panel-control"
+        sx={{
+          padding: 2,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "400px",
+        }}
+      >
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
+
+  // Si no se encuentra el servicio después de cargar
+  if (!service) {
+    return (
+      <Box className="box-panel-control" sx={{ padding: 2 }}>
+        <Typography variant="h5" color="error">
+          Servicio no encontrado
+        </Typography>
+        <Button onClick={handleBackPage} sx={{ mt: 2 }}>
+          Volver
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box className="box-panel-control" sx={{ padding: 2 }}>
       <Grid container spacing={1} className="contenedor-principal">
@@ -171,7 +203,6 @@ export default function CheckoutView({ isClient }: CheckoutViewProp) {
         <Grid size={12} className="contenedor-principal">
           <Steps activeStep={activeStep} steps={steps} />
         </Grid>
-        {/* Bloque */}
         <Grid size={12} className="contenedor-principal">
           <Box
             sx={{
@@ -216,6 +247,7 @@ export default function CheckoutView({ isClient }: CheckoutViewProp) {
                       onClick={handleBack}
                       variant="text"
                       sx={{ display: { xs: "none", sm: "flex" } }}
+                      disabled={isSaving}
                     >
                       Previous
                     </Button>
@@ -236,13 +268,14 @@ export default function CheckoutView({ isClient }: CheckoutViewProp) {
                   {activeStep === 1 && (
                     <Button
                       variant="contained"
-                      onClick={handleOpen} // o handleFinish si necesitas hacer otra cosa
+                      onClick={handleOpen}
+                      disabled={isSaving}
                       sx={{ width: { xs: "100%", sm: "fit-content" } }}
                     >
-                      {load ? (
-                        <CircularProgress size={24} sx={{ color: "white" }} /> // Mostrar ciclo de carga
+                      {isSaving ? (
+                        <CircularProgress size={24} sx={{ color: "white" }} />
                       ) : (
-                        <h1>Finalizar</h1>
+                        "Finalizar"
                       )}
                     </Button>
                   )}

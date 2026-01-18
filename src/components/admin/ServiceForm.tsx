@@ -3,14 +3,13 @@ import { FormProvider, useForm } from "react-hook-form";
 import { inputServiceConfig } from "@/config/serviceFormConfig";
 import { Service } from "src/types/Service";
 import { useNavigate } from "react-router-dom";
-import serviceAPI from "@API/serviceAPI";
+
 import UserInput from "@forms/UserInput";
 import SaveButton from "@buttons/SaveButton";
 import CreationButton from "@buttons/CreationButton";
 import Success from "@components/Success";
 import Progress from "@components/Progress";
 import { getService } from "@/utils/utils";
-import { useRoleData } from "@/observer/RoleDataContext";
 import { ServiceRequest } from "@/typesRequest/ServiceRequest";
 import axios from "axios";
 
@@ -29,7 +28,7 @@ export default function ServiceForm({
   const [loadingSave, setLoadingSave] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fail, setFail] = useState(false);
-  const { data, loading, refreshServices } = useRoleData();
+  const data: any = [];
 
   const handleClose = () => {
     setOpen(false);
@@ -79,13 +78,13 @@ export default function ServiceForm({
           "📤 Enviando a API:",
           serviceId,
           data.price,
-          typeof data.price
+          typeof data.price,
         );
-        await serviceAPI.updateService(serviceId, transformedData.price);
-        const resp = await serviceAPI.updateService(serviceId, data.price);
+        //await serviceAPI.updateService(serviceId, transformedData.price);
+        //const resp = await serviceAPI.updateService(serviceId, data.price);
         console.log("📥 Respuesta de API:", resp.data);
         // Esperar que se actualice la lista desde API
-        await refreshServices();
+        //await refreshServices();
 
         setMessage("¡Se ha actualizado con éxito!");
         setIsError(false);
@@ -110,11 +109,11 @@ export default function ServiceForm({
 
       console.log(transformedData);
       console.log("📤 Enviando a API:", transformedData);
-      await serviceAPI.createService(transformedData);
+      //await serviceAPI.createService(transformedData);
       console.log("✅ Creado en API");
 
       console.log("🔄 Refrescando servicios...");
-      await refreshServices();
+      //await refreshServices();
       console.log("✅ Servicios actualizados");
       setMessage("¡Se ha creado con éxito!");
       setIsError(false);
@@ -143,8 +142,6 @@ export default function ServiceForm({
       setLoadingSave(false); // Termina la bolita de cargando
     }
   });
-
-  if (loading) return <Progress />;
 
   return (
     <FormProvider {...methods}>

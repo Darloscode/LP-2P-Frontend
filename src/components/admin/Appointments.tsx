@@ -20,7 +20,6 @@ export default function Appointments() {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      console.log("Tenemos:", appointments.length);
       const token = localStorage.getItem("token");
       try {
         const responseAppointments = await axios.get(`${apiURL}/appointments`, {
@@ -31,12 +30,10 @@ export default function Appointments() {
 
         const appointments: AppointmentResponse[] =
           getAppointmentByProfessional(selectedId, responseAppointments.data);
-        console.log(appointments);
         setAppointments(appointments);
       } catch (error) {
         console.error("Error loading appointments", error);
       }
-      console.log("Tenemos:", appointments.length);
     };
 
     fetchAppointments();

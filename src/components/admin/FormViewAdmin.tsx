@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { UserAccountRequest } from "@/typesRequest/UserAccountRequest";
 import { User } from "@/types/User";
 import { getUser } from "@/utils/utils";
-import { useRoleData } from "@/observer/RoleDataContext";
 import { register } from "@/API/auth";
 import Box from "@mui/material/Box";
 import UserFormAdmin from "@admin/UserFormAdmin";
@@ -11,7 +10,6 @@ import Steps from "@components/Steps";
 import Grid from "@mui/material/Grid2";
 import Success from "@components/Success";
 import Progress from "@components/Progress";
-import userAccountAPI from "@/API/userAccountAPI";
 
 interface FormViewProps {
   isEdit: boolean;
@@ -29,14 +27,7 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
 
   const [userData, setUserData] = useState<User>();
 
-  const {
-    data,
-    loading,
-    refreshPersons,
-    refreshUserAccounts,
-    refreshRoles,
-    refreshProfessionals,
-  } = useRoleData();
+  const data: any = [];
 
   const handleNext = (data: User) => {
     setUserData((prev) => ({ ...prev, ...data }));
@@ -46,6 +37,7 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
   const handleBack = () => {
     if (step > 0) setStep(step - 1);
   };
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -143,20 +135,11 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
     setLoad(true);
     if (isEdit) {
       const userEdit = formatUserEdit(fullData);
-      console.log(userEdit);
-      await userAccountAPI.updateUserAccount(user_id!, userEdit);
-      await refreshPersons();
-      await refreshUserAccounts();
-      await refreshRoles();
-      await refreshProfessionals();
+
+      //await userAccountAPI.updateUserAccount(user_id!, userEdit);
     } else {
       const userRegister = formatUser(fullData);
       console.log(userRegister);
-      await register(userRegister);
-      await refreshPersons();
-      await refreshUserAccounts();
-      await refreshRoles();
-      await refreshProfessionals();
     }
     setLoad(false);
     handleOpen();
@@ -176,8 +159,6 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       { start: 9, end: 12 },
     ];
   }
-
-  if (loading) return <Progress />;
 
   if (isEdit) {
     if (user_id) {

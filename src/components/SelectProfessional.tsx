@@ -34,11 +34,10 @@ export default function SelectProfessional({
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const professionals: ProfessionalResponse[] = responseProfessional.data;
-        console.log(professionals);
         setOptions(professionals);
       } catch (error) {
         console.error("Error loading appointments", error);

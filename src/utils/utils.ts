@@ -74,6 +74,7 @@ import { FileData } from "@/types/FileData";
 import { dataPayments } from "@/data/Payment";
 import { ReceiptResponse } from "@/typesResponse/ReceiptResponse";
 import { receiptAdapter } from "@/adapters/receiptAdapter";
+import { ProfessionalOptionResponse } from "@/typesResponse/ProfessionalOptionResponse";
 
 export function getPerson(person_id: number, data: any): PersonResponse {
   const persons: PersonResponse[] = data.persons;
@@ -84,15 +85,16 @@ export function getPerson(person_id: number, data: any): PersonResponse {
 
 export function getWorkerSchedule(
   worker_schedule_id: number,
-  data: any
+  data: any,
 ): WorkerScheduleResponse {
   const workerschedules: WorkerScheduleResponse[] = data.workerSchedules;
   const workerschedule = workerschedules.find(
-    (workerschedule) => workerschedule.worker_schedule_id === worker_schedule_id
+    (workerschedule) =>
+      workerschedule.worker_schedule_id === worker_schedule_id,
   );
   if (!workerschedule)
     throw new Error(
-      `No se encontró el worker schedule con ID ${worker_schedule_id}`
+      `No se encontró el worker schedule con ID ${worker_schedule_id}`,
     );
   return workerschedule;
 }
@@ -103,7 +105,7 @@ export function getService(service_id: number): ServiceResponse {
     ? JSON.parse(servicesData)
     : [];
   const serviceFind = services.find(
-    (service) => service.service_id === service_id
+    (service) => service.service_id === service_id,
   );
   if (!serviceFind)
     throw new Error(`No se encontró el worker schedule con ID ${service_id}`);
@@ -112,19 +114,19 @@ export function getService(service_id: number): ServiceResponse {
 
 export function getProfessionalService(
   service_id: number,
-  data: any
+  data: any,
 ): PersonResponse[] {
   const professionals: ProfessionalServiceResponse[] =
     data.professionalServices;
 
   const professionalsFilter = professionals.filter(
-    (service) => service.service_id === service_id
+    (service) => service.service_id === service_id,
   );
 
   const persons: PersonResponse[] = data.persons;
 
   const professionalIds = new Set(
-    professionalsFilter.map((prof) => prof.person_id)
+    professionalsFilter.map((prof) => prof.person_id),
   );
 
   return persons.filter((person) => professionalIds.has(person.person_id));
@@ -132,7 +134,7 @@ export function getProfessionalService(
 
 export function getProfessionalSchedule(
   person_id: number,
-  data: any
+  data: any,
 ): WorkerScheduleResponse[] {
   const workerSchedules: WorkerScheduleResponse[] = data.workerSchedules;
   const appointments: Appointment[] = getAppointments(data);
@@ -144,7 +146,7 @@ export function getProfessionalSchedule(
       const hasAppointment = appointments.some(
         (appt) =>
           appt.date === worker.schedule.date &&
-          appt.startTime === worker.schedule.start_time
+          appt.startTime === worker.schedule.start_time,
       );
       // Solo queremos los que NO tengan cita
       return !hasAppointment;
@@ -176,7 +178,7 @@ export function getUsers(data: any): User[] {
       // Si es profesional (role_id === 2), añadimos sus datos extra
       if (role.role_id === 2) {
         const prof = professionals.find(
-          (p) => p.person_id === person.person_id
+          (p) => p.person_id === person.person_id,
         );
         if (prof) {
           user.title = prof.title;
@@ -236,7 +238,7 @@ export function getDataAppointment(data: any): PageViewsBarChartProps {
 
 export function getDataCard(
   usersData: any,
-  appointmentsData: any
+  appointmentsData: any,
 ): StatCardProps[] {
   const users: UserAccountResponse[] = usersData;
   const appointments: AppointmentResponse[] = appointmentsData;
@@ -250,7 +252,7 @@ export function getDataCard(
 
   function countMonthDays<T>(
     items: T[],
-    getDate: (item: T) => string
+    getDate: (item: T) => string,
   ): number[] {
     const counts = Array(daysInLastMonth).fill(0);
 
@@ -276,11 +278,11 @@ export function getDataCard(
   const citasData = countMonthDays(appointments, (c) => c.creation_date);
   const pacientesData = countMonthDays(
     users.filter((u) => u.role.role_id === 3),
-    (u) => u.creation_date
+    (u) => u.creation_date,
   );
   const inactivosData = countMonthDays(
     users.filter((u) => u.status.status_id === 2),
-    (u) => u.creation_date
+    (u) => u.creation_date,
   );
 
   return [
@@ -336,7 +338,7 @@ export function toNumber(str: string): number {
 
 export function getAppointmentByProfessional(
   proffesional_id: number,
-  data: any
+  data: any,
 ): AppointmentResponse[] {
   if (!data) {
     return [];
@@ -349,7 +351,7 @@ export function getAppointmentByProfessional(
   }
 
   return appointments.filter(
-    (appointment) => appointment.professional.person_id === proffesional_id
+    (appointment) => appointment.professional.person_id === proffesional_id,
   );
 }
 
@@ -359,34 +361,34 @@ export function getAppointments(data: any): Appointment[] {
   const appointments: Appointment[] = (data.appointments || [])
     .map((appointment: any) => {
       const service = data.services?.find(
-        (s: any) => s.service_id === appointment.payment.service_id
+        (s: any) => s.service_id === appointment.payment.service_id,
       );
 
       const clientPerson = data.persons?.find(
-        (p: any) => p.person_id === appointment.payment.person_id
+        (p: any) => p.person_id === appointment.payment.person_id,
       );
 
       const clientAccount = data.userAccounts?.find(
-        (a: any) => a.user_id === clientPerson?.user_id
+        (a: any) => a.user_id === clientPerson?.user_id,
       );
 
       const clientRole = data.roles?.find(
-        (r: any) => r.role_id === clientAccount?.role_id
+        (r: any) => r.role_id === clientAccount?.role_id,
       );
 
       const professionalPerson = data.persons?.find(
-        (p: any) => p.person_id === appointment.worker_schedule.person_id
+        (p: any) => p.person_id === appointment.worker_schedule.person_id,
       );
       const professionalAccount = data.userAccounts?.find(
-        (a: any) => a.user_id === professionalPerson?.user_id
+        (a: any) => a.user_id === professionalPerson?.user_id,
       );
 
       const professionalRole = data.roles?.find(
-        (r: any) => r.role_id === professionalAccount?.role_id
+        (r: any) => r.role_id === professionalAccount?.role_id,
       );
 
       const schedule = data.schedules?.find(
-        (s: any) => s.schedule_id === appointment.worker_schedule.schedule_id
+        (s: any) => s.schedule_id === appointment.worker_schedule.schedule_id,
       );
 
       // Validación
@@ -406,12 +408,12 @@ export function getAppointments(data: any): Appointment[] {
       const professional = userAdapter(
         professionalPerson,
         professionalRole,
-        professionalAccount
+        professionalAccount,
       );
       // Si es profesional (role_id === 2), añadimos sus datos extra
       if (professional.role_id === 2) {
         const prof = professionals.find(
-          (p) => p.person_id === professional.person_id
+          (p) => p.person_id === professional.person_id,
         );
         if (prof) {
           professional.title = prof.title;
@@ -424,7 +426,7 @@ export function getAppointments(data: any): Appointment[] {
         schedule,
         client,
         professional,
-        service
+        service,
       );
     })
     .filter(Boolean);
@@ -505,7 +507,7 @@ export function getAppointmentsReport(data: any): AppointmentReport[] {
   return appointmentReport
     .map((report) => {
       const appointment = appointments.find(
-        (a) => a.id_appointment === report.appointment_id
+        (a) => a.id_appointment === report.appointment_id,
       );
 
       if (!appointment) return null;
@@ -517,10 +519,10 @@ export function getAppointmentsReport(data: any): AppointmentReport[] {
 
 export function getReportsUser(
   appointmentsReport: AppointmentReport[],
-  patient_id: number
+  patient_id: number,
 ): AppointmentReport[] {
   return appointmentsReport.filter(
-    (report) => report.appointment.client.person_id === patient_id
+    (report) => report.appointment.client.person_id === patient_id,
   );
 }
 
@@ -587,7 +589,7 @@ export function handleDownloadInvoice(invoice: Receipt) {
     "Teléfono: 0999616051 | Email: fundacionaspyecuador@gmail.com",
     105,
     34,
-    { align: "center" }
+    { align: "center" },
   );
 
   // Línea divisoria
@@ -656,62 +658,61 @@ export function handleDownloadInvoice(invoice: Receipt) {
   doc.text("Gracias por confiar en nosotros.", 105, 290, { align: "center" });
 
   doc.save(
-    `Factura-${invoice.receipt.receipt_id}-${invoice.client.first_name}.pdf`
+    `Factura-${invoice.receipt.receipt_id}-${invoice.client.first_name}.pdf`,
   );
 }
 
 export function getAppointmentsProfessional(
   data: any,
-  person_id: number
+  person_id: number,
 ): Appointment[] {
   const appointments: Appointment[] = getAppointments(data);
   return appointments.filter(
-    (appointment) => appointment.proffesional.person_id === person_id
+    (appointment) => appointment.proffesional.person_id === person_id,
   );
 }
 
 export function getClients(data: any, person_id: number): User[] {
   const appointments: Appointment[] = getAppointmentsProfessional(
     data,
-    person_id
+    person_id,
   );
 
   const clients = appointments.map((app) => app.client);
 
   const uniqueClients = clients.filter(
     (client, index, self) =>
-      index === self.findIndex((c) => c.person_id === client.person_id)
+      index === self.findIndex((c) => c.person_id === client.person_id),
   );
   return uniqueClients;
 }
 
 export function getUser(data: any, user_id: number): User {
   const users: User[] = getUsers(data);
-  console.log(users);
   return users.find((user) => user.user_id === user_id)!;
 }
 
 export function getUnmarkedAppointments(
   data: any,
-  person_id: number
+  person_id: number,
 ): Appointment[] {
   const appointments: Appointment[] = getAppointmentsProfessional(
     data,
-    person_id
+    person_id,
   );
   //const appointmentReport: AppointmentReport[] = getAppointmentsReport(data);
   return appointments.filter(
-    (appointment) => appointment.status.id_status === 1
+    (appointment) => appointment.status.id_status === 1,
   );
 }
 
 export function getUnreportedAppointments(
   data: any,
-  person_id: number
+  person_id: number,
 ): Appointment[] {
   const appointments: Appointment[] = getAppointmentsProfessional(
     data,
-    person_id
+    person_id,
   );
 
   const appointmentReports: AppointmentReportResponse[] =
@@ -724,8 +725,8 @@ export function getUnreportedAppointments(
   const unreported = appointments.filter(
     (app) =>
       !appointmentReports.some(
-        (report) => report.appointment_id === app.id_appointment
-      ) && app.status.id_status === 2 // 🔹 solo citas con status_id = 1
+        (report) => report.appointment_id === app.id_appointment,
+      ) && app.status.id_status === 2, // 🔹 solo citas con status_id = 1
   );
   return unreported.length > 0 ? unreported : [];
 }
@@ -743,7 +744,7 @@ export function getClientsAppointment(data: any): User[] {
 
 export function getAppointmentbyClient(
   data: any,
-  client_id: number
+  client_id: number,
 ): Appointment[] {
   const appointments: Appointment[] = getAppointments(data);
   return appointments.filter((app) => app.client.user_id === client_id);
@@ -758,24 +759,24 @@ export function getReceipt(data: any): Receipt[] {
   const receiptList: Receipt[] = receiptsResponse
     .map((receipt) => {
       const payment = dataPaymentss?.find(
-        (p: any) => p.payment_id === receipt.payment_id
+        (p: any) => p.payment_id === receipt.payment_id,
       );
       if (!payment) return null;
 
       const paymentData = data.paymentData?.find(
-        (pd: any) => pd.payment_data_id === payment.payment_data_id
+        (pd: any) => pd.payment_data_id === payment.payment_data_id,
       );
       const service = data.services?.find(
-        (s: any) => s.service_id === payment.service.service_id
+        (s: any) => s.service_id === payment.service.service_id,
       );
       const person = data.persons?.find(
-        (p: any) => p.person_id === payment.person.person_id
+        (p: any) => p.person_id === payment.person.person_id,
       );
       const userAccount = data.userAccounts?.find(
-        (ua: any) => ua.user_id === person?.user_id
+        (ua: any) => ua.user_id === person?.user_id,
       );
       const role = data.roles?.find(
-        (r: any) => r.role_id === userAccount?.role_id
+        (r: any) => r.role_id === userAccount?.role_id,
       );
 
       if (!paymentData || !service || !person || !userAccount || !role)
@@ -812,8 +813,30 @@ export function getAppointmentByPayment(payment_id: number, data: any): number {
   if (!appointments) return -1;
 
   const found = appointments.find(
-    (appointment) => appointment.payment_id === payment_id
+    (appointment) => appointment.payment_id === payment_id,
   );
 
   return found ? found.appointment_id : -1;
+}
+
+export function getProfessionalByService(
+  serviceId: number,
+  professionalServices: ProfessionalServiceResponse[],
+): ProfessionalOptionResponse[] {
+  if (!serviceId) return [];
+
+  return professionalServices
+    .filter((ps) => ps.service.service_id === serviceId)
+    .map((ps) => ps.professional);
+}
+
+export function getScheduleByProfessional(
+  professionalId: number,
+  workerSchedules: WorkerScheduleResponse[],
+): WorkerScheduleResponse[] {
+  if (!professionalId) return [];
+
+  return workerSchedules.filter(
+    (ws) => ws.worker.person_id === professionalId && ws.is_available === true,
+  );
 }
