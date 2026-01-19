@@ -9,7 +9,7 @@ import CreationButton from "@buttons/CreationButton";
 import Success from "@components/Success";
 import Progress from "@components/Progress";
 import { getService } from "@/utils/utils";
-import { ServiceRequest } from "@/typesRequest/ServiceRequest";
+import { ServiceRequest } from "@typesRequest/ServiceRequest";
 import axios from "axios";
 
 interface ServiceFormProps {
@@ -28,10 +28,11 @@ export default function ServiceForm({
   const [isError, setIsError] = useState(false);
   const [fail, setFail] = useState(false);
   const data: any = [];
+
   const handleClose = () => {
     setOpen(false);
     if (!isError) {
-      navigate("/servicios"); // solo navegar si no hubo error
+      navigate("/servicios");
     }
   };
 
@@ -52,7 +53,7 @@ export default function ServiceForm({
         price: 0,
       });
     }
-  }, [isEditMode, serviceId]);
+  }, []);
 
   const list_inputs = inputServiceConfig.map((input) => (
     <UserInput

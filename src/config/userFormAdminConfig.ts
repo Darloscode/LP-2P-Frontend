@@ -19,6 +19,22 @@ export const inputCreateUserAdminConfig = [
     },
   },
   {
+    label: "Cédula",
+    key: "identification_number",
+    type: "text",
+    validation: {
+      required: { value: true, message: "Campo requerido" },
+    },
+  },
+  {
+    label: "Telefono",
+    key: "phone",
+    type: "text",
+    validation: {
+      required: { value: true, message: "Campo requerido" },
+    },
+  },
+  {
     label: "Fecha de nacimiento",
     key: "birthdate",
     type: "date",
@@ -152,29 +168,4 @@ export const inputCreateUserAdminConfig = [
       },
     },
   },
-
-  /*   {
-    label: "Provincia",
-    key: "province",
-    type: "select",
-    options: provincias,
-    validation: {
-      required: { value: true, message: "Campo requerido" },
-    },
-  }, */
-  /* {
-    label: "Ciudad",
-    key: "city",
-    type: "select",
-    options: [],
-    dependsOn: "province",
-    getOptions: (selectedProvince: ProvinceValue) => {
-      return selectedProvince
-        ? ciudadesPorProvincia[selectedProvince] || []
-        : [];
-    },
-    validation: {
-      required: { value: true, message: "Campo requerido" },
-    },
-  }, */
 ];

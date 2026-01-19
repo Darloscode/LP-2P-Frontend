@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserAccountRequest } from "@/typesRequest/UserAccountRequest";
-import { User } from "@/types/User";
+import { RegisterUser } from "@typesRequest/RegisterUser";
 import { getUser } from "@/utils/utils";
-import { register } from "@/API/auth";
+import { fetchUsers, register, updateUser } from "@/API/auth";
 import Box from "@mui/material/Box";
 import UserFormAdmin from "@admin/UserFormAdmin";
 import Steps from "@components/Steps";
 import Grid from "@mui/material/Grid2";
 import Success from "@components/Success";
 import Progress from "@components/Progress";
+import { PersonResponse } from "@/typesResponse/PersonResponse";
 
 interface FormViewProps {
   isEdit: boolean;
@@ -25,11 +25,9 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
   const [open, setOpen] = useState(false);
   const [load, setLoad] = useState(false);
 
-  const [userData, setUserData] = useState<User>();
+  const [userData, setUserData] = useState<RegisterUser>();
 
-  const data: any = [];
-
-  const handleNext = (data: User) => {
+  const handleNext = (data: RegisterUser) => {
     setUserData((prev) => ({ ...prev, ...data }));
     if (step < totalSteps - 1) setStep(step + 1);
   };
@@ -49,18 +47,14 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
 
   const navigate = useNavigate();
 
-  const formatUser = (data: any): UserAccountRequest => {
-    const roleMap: { [key: number]: string } = {
-      1: "admin",
-      2: "professional",
-      3: "client",
-      4: "staff",
-    };
+  const formatUserCreate = (data: any): RegisterUser => {
     if (Number(data.role_id) === 2) {
       return {
-        role_id: Number(data.role_id),
         email: data.email,
         password: data.password,
+        role_id: Number(data.role_id),
+        status: 1,
+
         first_name: data.first_name,
         last_name: data.last_name,
         birthdate: data.birthdate,
@@ -68,16 +62,23 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
         occupation: Number(data.occupation),
         marital_status: Number(data.marital_status),
         education: Number(data.education),
-        person_type: roleMap[data.role_id],
-        title: data.title,
-        about: data.about,
+        phone: data.phone,
+        country_id: 1,
+
+        identification_number: data.identification_number,
+
         specialty: data.specialty,
+        title: data.title,
+
+        created_by: "system",
       };
     }
     return {
-      role_id: Number(data.role_id),
       email: data.email,
       password: data.password,
+      role_id: Number(data.role_id),
+      status: 1,
+
       first_name: data.first_name,
       last_name: data.last_name,
       birthdate: data.birthdate,
@@ -85,23 +86,23 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       occupation: Number(data.occupation),
       marital_status: Number(data.marital_status),
       education: Number(data.education),
-      person_type: roleMap[data.role_id],
+      phone: data.phone,
+      country_id: 1,
+
+      identification_number: data.identification_number,
+
+      created_by: "system",
     };
   };
 
-  const formatUserEdit = (data: any): UserAccountRequest => {
-    const roleMap: { [key: number]: string } = {
-      1: "admin",
-      2: "proffesional",
-      3: "client",
-      4: "staff",
-    };
-
+  const formatUserEdit = (data: any): RegisterUser => {
     if (Number(data.role_id) === 2) {
       return {
-        role_id: Number(data.role_id),
         email: data.email,
         password: data.password,
+        role_id: Number(data.role_id),
+        status: 1,
+
         first_name: data.first_name,
         last_name: data.last_name,
         birthdate: data.birthdate,
@@ -109,16 +110,23 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
         occupation: Number(data.occupation),
         marital_status: Number(data.marital_status),
         education: Number(data.education),
-        person_type: roleMap[data.role_id],
-        title: data.title,
-        about: data.about,
+        phone: data.phone,
+        country_id: 1,
+
+        identification_number: data.identification_number,
+
         specialty: data.specialty,
+        title: data.title,
+
+        created_by: "system",
       };
     }
     return {
-      role_id: Number(data.role_id),
       email: data.email,
       password: data.password,
+      role_id: Number(data.role_id),
+      status: 1,
+
       first_name: data.first_name,
       last_name: data.last_name,
       birthdate: data.birthdate,
@@ -126,20 +134,27 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       occupation: Number(data.occupation),
       marital_status: Number(data.marital_status),
       education: Number(data.education),
-      person_type: roleMap[data.role_id],
+      phone: data.phone,
+      country_id: 1,
+
+      identification_number: data.identification_number,
+
+      created_by: "system",
     };
   };
 
-  const handleFinalSubmit = async (data: User) => {
+  const handleFinalSubmit = async (data: RegisterUser) => {
     const fullData = { ...userData, ...data };
     setLoad(true);
-    if (isEdit) {
+    if (isEdit && user_id) {
       const userEdit = formatUserEdit(fullData);
-
-      //await userAccountAPI.updateUserAccount(user_id!, userEdit);
+      await updateUser(user_id, userEdit);
+      await fetchUsers();
     } else {
-      const userRegister = formatUser(fullData);
+      const userRegister = formatUserCreate(fullData);
       console.log(userRegister);
+      await register(userRegister);
+      await fetchUsers();
     }
     setLoad(false);
     handleOpen();
@@ -148,22 +163,22 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
   let stepsFields = [];
   if (roleSelect === 2) {
     stepsFields = [
-      { start: 0, end: 5 },
-      { start: 5, end: 12 },
+      { start: 0, end: 6 },
+      { start: 6, end: 12 },
       { start: 12, end: 14 },
     ];
   } else {
     stepsFields = [
-      { start: 0, end: 5 },
-      { start: 5, end: 9 },
+      { start: 0, end: 6 },
+      { start: 6, end: 9 },
       { start: 9, end: 12 },
     ];
   }
 
   if (isEdit) {
     if (user_id) {
-      const user: User = getUser(data, user_id);
-      if (user.role_id === 2) {
+      const user: PersonResponse = getUser(user_id);
+      if (user.user_account.role_id === 2) {
         stepsFields = [
           { start: 0, end: 5 },
           { start: 5, end: 12 },

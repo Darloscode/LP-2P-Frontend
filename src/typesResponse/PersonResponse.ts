@@ -5,17 +5,18 @@ export type PersonResponse = {
   first_name: string;
   last_name: string;
   birthdate: string;
-  phone: string | null;
-  identification: string | null;
+  phone: string;
+  identification: string;
   gender: string;
-  occupation: string | null;
-  marital_status: string | null;
-  education: string | null;
+  occupation: string;
+  marital_status: string;
+  education: string;
   email: string;
 
   user_account: {
     user_account_id: number;
     role: string;
+    role_id: number;
     status_id: number;
     status: string;
   };

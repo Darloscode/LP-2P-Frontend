@@ -28,7 +28,7 @@ export default function ProfileView({ user, isRowPosition }: ProfileProps) {
         />
         <div className="flex flex-col gap-1 justify-center items-center">
           <h1 className="font-kumbh text-primaryAspy font-semibold text-base">
-            {user.first_name} {user.last_name}
+            {user.first_name} {user.last_name}xd
           </h1>
           <h2 className="font-kumbh text-secondaryAspy text-sm">
             {user.user_account.role}

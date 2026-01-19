@@ -1,25 +1,65 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { inputCreateUserAdminConfig } from "@/config/userFormAdminConfig";
-import { User } from "@/types/User";
 import { getUsers } from "@utils/utils";
 import Button from "@mui/material/Button";
 import UserInput from "@forms/UserInput";
+import axios from "axios";
+import apiURL from "@/API/apiConfig";
 import Progress from "@components/Progress";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
+import { RegisterUser } from "@/typesRequest/RegisterUser";
+import { PersonResponse } from "@/typesResponse/PersonResponse";
 
 interface UserFormProps {
   isEditMode: boolean;
   userId?: number;
   start: number;
   end: number;
-  onNext: (data: User) => void;
+  onNext: (data: RegisterUser) => void;
   onBack: () => void;
-  onFinish: (data: User) => void;
+  onFinish: (data: RegisterUser) => void;
   isLast?: boolean;
   onRoleChange?: (roleId: number) => void;
   load?: boolean;
 }
+
+// Funciones traductoras de string a number
+const translateGender = (gender: string): number => {
+  const genderMap: { [key: string]: number } = {
+    Masculino: 1,
+    Femenino: 2,
+  };
+  return genderMap[gender] || 0;
+};
+
+const translateOccupation = (occupation: string): number => {
+  const occupationMap: { [key: string]: number } = {
+    Doctor: 1,
+    Enfermero: 2,
+    Ingeniero: 3,
+    Estudiante: 4,
+  };
+  return occupationMap[occupation] || 0;
+};
+
+const translateMaritalStatus = (maritalStatus: string): number => {
+  const maritalStatusMap: { [key: string]: number } = {
+    Soltero: 1,
+    Casado: 2,
+    Divorciado: 3,
+  };
+  return maritalStatusMap[maritalStatus] || 0;
+};
+
+const translateEducation = (education: string): number => {
+  const educationMap: { [key: string]: number } = {
+    Secundaria: 1,
+    Pregrado: 2,
+    Postgrado: 3,
+  };
+  return educationMap[education] || 0;
+};
 
 export default function UserFormAdmin({
   isEditMode,
@@ -33,41 +73,70 @@ export default function UserFormAdmin({
   onRoleChange,
   load,
 }: UserFormProps) {
-  const methods = useForm<User>();
-  const data: any = [];
-  const users: User[] = getUsers(data);
+  const methods = useForm<RegisterUser>();
+  const [users, setUsers] = useState<PersonResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // useEffect para obtener la lista de usuarios
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(`${apiURL}/persons`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        localStorage.setItem("persons", JSON.stringify(response.data));
+
+        const userList: PersonResponse[] = response.data;
+
+        setUsers(userList);
+      } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        setUsers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
-    if (isEditMode) {
-      const user = users.find((u) => u.user_id === userId);
+    if (isEditMode && users.length > 0) {
+      const user = users.find((u) => u.person_id === userId);
       if (user) {
         methods.reset({
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
+          identification_number: user.identification,
+          phone: user.phone,
           birthdate: user.birthdate,
-          gender: user.gender,
-          occupation: user.occupation,
-          marital_status: user.marital_status,
-          education: user.education,
-          role_id: user.role.role_id,
-          title: user.title,
-          about: user.about,
-          specialty: user.specialty,
+          gender: translateGender(user.gender),
+          occupation: translateOccupation(user.occupation),
+          marital_status: translateMaritalStatus(user.marital_status),
+          education: translateEducation(user.education),
+          role_id: user.user_account.role_id,
+          title: user.professional_info?.title,
+          specialty: user.professional_info?.specialty,
         });
       }
-    } else {
+    } else if (!isEditMode) {
       methods.reset({
         first_name: "",
         last_name: "",
         email: "",
         birthdate: "",
         title: "",
-        about: "",
         specialty: "",
       });
     }
-  }, [isEditMode, userId]);
+  }, [isEditMode, userId, users]);
 
   const roleSelect = Number(methods.watch("role_id") ?? 0);
 
@@ -101,6 +170,7 @@ export default function UserFormAdmin({
       options={input.options}
     />
   ));
+
   const onSubmit = methods.handleSubmit((data) => {
     if (isLast) {
       onFinish(data);
@@ -115,6 +185,14 @@ export default function UserFormAdmin({
     }
     return "Siguiente";
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <FormProvider {...methods}>
@@ -145,7 +223,7 @@ export default function UserFormAdmin({
             className="md:w-[250px]"
           >
             {load ? (
-              <CircularProgress size={24} sx={{ color: "white" }} /> // Mostrar ciclo de carga
+              <CircularProgress size={24} sx={{ color: "white" }} />
             ) : (
               getButtonLabel()
             )}

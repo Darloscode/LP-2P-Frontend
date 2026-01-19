@@ -75,6 +75,7 @@ import { dataPayments } from "@/data/Payment";
 import { ReceiptResponse } from "@/typesResponse/ReceiptResponse";
 import { receiptAdapter } from "@/adapters/receiptAdapter";
 import { ProfessionalOptionResponse } from "@/typesResponse/ProfessionalOptionResponse";
+import { RegisterUser } from "@/typesRequest/RegisterUser";
 
 export function getPerson(person_id: number, data: any): PersonResponse {
   const persons: PersonResponse[] = data.persons;
@@ -687,9 +688,22 @@ export function getClients(data: any, person_id: number): User[] {
   return uniqueClients;
 }
 
-export function getUser(data: any, user_id: number): User {
-  const users: User[] = getUsers(data);
-  return users.find((user) => user.user_id === user_id)!;
+export function getUser(user_id: number): PersonResponse {
+  const raw = localStorage.getItem("persons");
+
+  if (!raw) {
+    throw new Error("No hay personas en localStorage");
+  }
+
+  const data: PersonResponse[] = JSON.parse(raw);
+
+  const user = data.find((u) => u.person_id === user_id);
+
+  if (!user) {
+    throw new Error(`Usuario con ID ${user_id} no encontrado`);
+  }
+
+  return user;
 }
 
 export function getUnmarkedAppointments(
