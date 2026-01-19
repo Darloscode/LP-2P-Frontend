@@ -11,6 +11,7 @@ import Progress from "@components/Progress";
 import { getService } from "@/utils/utils";
 import { ServiceRequest } from "@typesRequest/ServiceRequest";
 import axios from "axios";
+import apiURL from "@/API/apiConfig";
 
 interface ServiceFormProps {
   isEditMode: boolean;
@@ -69,19 +70,14 @@ export default function ServiceForm({
   const onClickSave = methods.handleSubmit(async (data) => {
     try {
       setLoadingSave(true);
+      const token = localStorage.getItem("token");
 
       if (isEditMode && serviceId) {
-        const transformedData: Service = data;
-        console.log(
-          "📤 Enviando a API:",
-          serviceId,
-          data.price,
-          typeof data.price,
+        await axios.put(
+          `${apiURL}/services/${serviceId}`,
+          data,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-        //wait serviceAPI.updateService(serviceId, transformedData.price);
-        //const resp = await serviceAPI.updateService(serviceId, data.price);
-        console.log("📥 Respuesta de API:", resp.data);
-        // Esperar que se actualice la lista desde API
 
         setMessage("¡Se ha actualizado con éxito!");
         setIsError(false);
@@ -102,14 +98,16 @@ export default function ServiceForm({
   const onClickCreate = methods.handleSubmit(async (data) => {
     try {
       setLoadingSave(true);
-      const transformedData: ServiceRequest = data;
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `${apiURL}/services`,
+        data,
+        {headers: { Authorization: `Bearer ${token}`}}
+      );
 
-      //await serviceAPI.createService(transformedData);
-
-      setMessage("¡Se ha creado con éxito!");
-      setIsError(false);
-      setFail(false);
+      setMessage("¡Servicio creado con éxito!");
       setOpen(true);
+      
     } catch (error: any) {
       console.error("❌ Error en onClickCreate:", error);
       if (axios.isAxiosError(error) && error.response) {
