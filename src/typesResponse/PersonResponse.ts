@@ -21,7 +21,7 @@ export type PersonResponse = {
     status: string;
   };
 
-  country: {
+  country?: {
     country_id: number | null;
     name: string | null;
     state: {

@@ -48,7 +48,12 @@ export const updateUser = async (
   userUpdate: Partial<RegisterUser>,
 ) => {
   try {
-    await axios.put(`${apiURL}/update-user/${userId}`, userUpdate);
+    const token = localStorage.getItem("token");
+    await axios.put(`${apiURL}/update-user/${userId}`, userUpdate, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     console.error("Error al actualizar usuario:", error);
     throw error;

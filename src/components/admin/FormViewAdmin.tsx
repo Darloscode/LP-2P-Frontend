@@ -8,7 +8,6 @@ import UserFormAdmin from "@admin/UserFormAdmin";
 import Steps from "@components/Steps";
 import Grid from "@mui/material/Grid2";
 import Success from "@components/Success";
-import Progress from "@components/Progress";
 import { PersonResponse } from "@/typesResponse/PersonResponse";
 
 interface FormViewProps {
@@ -152,7 +151,6 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       await fetchUsers();
     } else {
       const userRegister = formatUserCreate(fullData);
-      console.log(userRegister);
       await register(userRegister);
       await fetchUsers();
     }
@@ -164,14 +162,14 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
   if (roleSelect === 2) {
     stepsFields = [
       { start: 0, end: 6 },
-      { start: 6, end: 12 },
-      { start: 12, end: 14 },
+      { start: 6, end: 13 },
+      { start: 13, end: 16 },
     ];
   } else {
     stepsFields = [
       { start: 0, end: 6 },
-      { start: 6, end: 9 },
-      { start: 9, end: 12 },
+      { start: 6, end: 11 },
+      { start: 11, end: 13 },
     ];
   }
 
@@ -180,28 +178,28 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       const user: PersonResponse = getUser(user_id);
       if (user.user_account.role_id === 2) {
         stepsFields = [
-          { start: 0, end: 5 },
-          { start: 5, end: 12 },
-          { start: 12, end: 14 },
+          { start: 0, end: 6 },
+          { start: 6, end: 13 },
+          { start: 13, end: 16 },
         ];
       } else {
         stepsFields = [
-          { start: 0, end: 5 },
-          { start: 5, end: 9 },
-          { start: 9, end: 12 },
+          { start: 0, end: 6 },
+          { start: 6, end: 11 },
+          { start: 11, end: 13 },
         ];
       }
       if (roleSelect === 2) {
         stepsFields = [
-          { start: 0, end: 5 },
-          { start: 5, end: 12 },
-          { start: 12, end: 14 },
+          { start: 0, end: 6 },
+          { start: 6, end: 13 },
+          { start: 13, end: 16 },
         ];
       } else {
         stepsFields = [
-          { start: 0, end: 5 },
-          { start: 5, end: 9 },
-          { start: 9, end: 12 },
+          { start: 0, end: 6 },
+          { start: 6, end: 11 },
+          { start: 11, end: 13 },
         ];
       }
     }

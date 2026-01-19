@@ -109,6 +109,7 @@ export default function UserFormAdmin({
   useEffect(() => {
     if (isEditMode && users.length > 0) {
       const user = users.find((u) => u.person_id === userId);
+      console.log(user);
       if (user) {
         methods.reset({
           first_name: user.first_name,
@@ -147,7 +148,7 @@ export default function UserFormAdmin({
   }, [roleSelect]);
 
   const filteredInputs = inputCreateUserAdminConfig.filter((input) => {
-    const isExtraField = ["title", "about", "specialty"].includes(input.key);
+    const isExtraField = ["title", "specialty"].includes(input.key);
     return !(isExtraField && roleSelect !== 2);
   });
 

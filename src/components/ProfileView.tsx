@@ -3,6 +3,7 @@ import { getAge } from "@/utils/utils";
 import photo from "@assets/user.png";
 import { useNavigate } from "react-router-dom";
 import { PersonResponse } from "@/typesResponse/PersonResponse";
+import { fetchUsers } from "@/API/auth";
 
 type ProfileProps = {
   user: PersonResponse;
@@ -12,7 +13,8 @@ type ProfileProps = {
 export default function ProfileView({ user, isRowPosition }: ProfileProps) {
   const navigate = useNavigate();
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
+    await fetchUsers();
     navigate(`/editar/${user.person_id}`);
   };
 
@@ -28,7 +30,7 @@ export default function ProfileView({ user, isRowPosition }: ProfileProps) {
         />
         <div className="flex flex-col gap-1 justify-center items-center">
           <h1 className="font-kumbh text-primaryAspy font-semibold text-base">
-            {user.first_name} {user.last_name}xd
+            {user.first_name} {user.last_name}
           </h1>
           <h2 className="font-kumbh text-secondaryAspy text-sm">
             {user.user_account.role}
