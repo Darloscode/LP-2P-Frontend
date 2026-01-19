@@ -41,7 +41,7 @@ export default function ServiceForm({
 
   useEffect(() => {
     if (isEditMode && serviceId) {
-      const service = getService(data, serviceId);
+      const service = getService(serviceId);
       if (service) {
         methods.reset({
           name: service.name,
@@ -71,19 +71,17 @@ export default function ServiceForm({
     try {
       setLoadingSave(true);
       const token = localStorage.getItem("token");
+      await axios.put(
+        `${apiURL}/services/${serviceId}`,
+        data,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      if (isEditMode && serviceId) {
-        await axios.put(
-          `${apiURL}/services/${serviceId}`,
-          data,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        setMessage("¡Se ha actualizado con éxito!");
-        setIsError(false);
-        setFail(false);
-        setOpen(true);
-      }
+      setMessage("¡Se ha actualizado con éxito!");
+      setIsError(false);
+      setFail(false);
+      setOpen(true);
+      
     } catch (error) {
       console.error("Error al guardar el servicio:", error);
       setFail(true);
