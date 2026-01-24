@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { inputCreateUserAdminConfig } from "@/config/userFormAdminConfig";
-import { getUsers } from "@utils/utils";
 import Button from "@mui/material/Button";
 import UserInput from "@forms/UserInput";
 import axios from "axios";
 import apiURL from "@/API/apiConfig";
-import Progress from "@components/Progress";
-import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import { RegisterUser } from "@/typesRequest/RegisterUser";
 import { PersonResponse } from "@/typesResponse/PersonResponse";
 
@@ -109,7 +107,6 @@ export default function UserFormAdmin({
   useEffect(() => {
     if (isEditMode && users.length > 0) {
       const user = users.find((u) => u.person_id === userId);
-      console.log(user);
       if (user) {
         methods.reset({
           first_name: user.first_name,

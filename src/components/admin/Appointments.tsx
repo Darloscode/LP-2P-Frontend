@@ -3,7 +3,7 @@ import { getAppointmentByProfessional } from "@utils/utils";
 import { AppointmentResponse } from "@/typesResponse/AppointmentResponse";
 import axios from "axios";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Agenda from "@components/Agenda";
 import SelectProfessional from "@components/SelectProfessional";
 import SimpleHeader from "@components/SimpleHeader";

@@ -4,8 +4,6 @@ import { getAuthenticatedUser } from "@/utils/store";
 import ProfileView from "@components/ProfileView";
 
 export default function Profile() {
-  //const user_from_local_storage = getUserFromLocalStorage();
-
   const userLogin = getAuthenticatedUser() as UserLogin;
   const user: PersonResponse = {
     person_id: userLogin.person.person_id,

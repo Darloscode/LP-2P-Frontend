@@ -4,7 +4,7 @@ import Profile from "@components/Profile";
 import UsersList from "@/components/admin/UsersList";
 import ServicesList from "@admin/ServicesList";
 import EditService from "@admin/EditService";
-import CreateService from "@/components/CreateService";
+import CreateService from "@admin/CreateService";
 import CreateUserAdmin from "@admin/CreateUserAdmin";
 import Appointment from "@/components/admin/Appointments";
 import EditUserAdmin from "@/components/admin/EditUserAdmin";

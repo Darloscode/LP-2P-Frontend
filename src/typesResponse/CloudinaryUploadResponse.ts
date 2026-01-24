@@ -1,4 +1,4 @@
-// SÍ SE USA
+// SÍ SE USA NUEVO
 export type CloudinaryUploadResponse = {
   secure_url: string;
   public_id: string;

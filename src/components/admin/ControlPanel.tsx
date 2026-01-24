@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ButtonControl } from "@/types/ButtonControl";
 import { getAuthenticatedUserName } from "@store";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Overview from "@admin/Overview";
 import ButtonList from "@components/ButtonList";

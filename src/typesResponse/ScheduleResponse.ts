@@ -1,4 +1,4 @@
-// SÍ SE USA
+// SÍ SE USA NUEVO
 export type ScheduleResponse = {
   schedule_id: number;
   date: string;

@@ -2,11 +2,10 @@ import PageViewsBarChart, {
   PageViewsBarChartProps,
 } from "@admin/PageViewsBarChart";
 import { getDataAppointment, getDataCard, getIncome } from "@/utils/utils";
-//import { dataPayments } from "@/data/Payment";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import StatCard, { StatCardProps } from "@admin/StatCard";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import SessionsChart from "@admin/SessionsChart";
 import apiURL from "@/API/apiConfig";
@@ -41,7 +40,7 @@ export default function MainGrid() {
         });
 
         const formattedData: PageViewsBarChartProps = getDataAppointment(
-          responseAppointments.data
+          responseAppointments.data,
         );
         setDataAppointment(formattedData);
 
@@ -50,7 +49,7 @@ export default function MainGrid() {
 
         const cardData: StatCardProps[] = getDataCard(
           responseUserAccount.data,
-          responseAppointments.data
+          responseAppointments.data,
         );
         setDataCard(cardData);
       } catch (error) {

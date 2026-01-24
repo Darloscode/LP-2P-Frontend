@@ -11,7 +11,6 @@ import FormControl from "@mui/material/FormControl";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import ForgotPassword from "./ForgotPassword";
 import ThemedLogo from "@/shared-theme/ThemedLogo";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -75,7 +74,7 @@ export default function SignInCard() {
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
       setEmailErrorMessage(
-        "Por favor, introduzca una dirección de correo electrónico válida."
+        "Por favor, introduzca una dirección de correo electrónico válida.",
       );
       isValid = false;
     } else {
@@ -86,7 +85,7 @@ export default function SignInCard() {
     if (!password || password.length < 4) {
       setPasswordError(true);
       setPasswordErrorMessage(
-        "La contraseña debe tener al menos 4 caracteres."
+        "La contraseña debe tener al menos 4 caracteres.",
       );
       isValid = false;
     } else {
@@ -156,7 +155,6 @@ export default function SignInCard() {
             color={passwordError ? "error" : "primary"}
           />
         </FormControl>
-        <ForgotPassword open={open} handleClose={handleClose} />
         <Button
           type="submit"
           fullWidth

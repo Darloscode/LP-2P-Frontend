@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { inputServiceConfig } from "@/config/serviceFormConfig";
-import { Service } from "src/types/Service";
+import { ServiceResponse } from "src/typesResponse/ServiceResponse";
 import { useNavigate } from "react-router-dom";
-
+import Button from "@mui/material/Button";
 import UserInput from "@forms/UserInput";
-import SaveButton from "@buttons/SaveButton";
-import CreationButton from "@buttons/CreationButton";
 import Success from "@components/Success";
-import Progress from "@components/Progress";
-import { getService } from "@/utils/utils";
+import CircularProgress from "@mui/material/CircularProgress";
 import { ServiceRequest } from "@/typesRequest/ServiceRequest";
 import axios from "axios";
+import { createService, updateService } from "@/API/auth";
+import apiURL from "@/API/apiConfig";
 
 interface ServiceFormProps {
   isEditMode: boolean;
@@ -28,7 +27,8 @@ export default function ServiceForm({
   const [loadingSave, setLoadingSave] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fail, setFail] = useState(false);
-  const data: any = [];
+  const [isLoading, setIsLoading] = useState(false);
+  const [services, setServices] = useState<ServiceResponse[]>([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -37,12 +37,35 @@ export default function ServiceForm({
     }
   };
 
-  const methods = useForm<Service>();
+  const methods = useForm<ServiceResponse>();
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(`${apiURL}/services`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const serviceList: ServiceResponse[] = response.data;
+        setServices(serviceList);
+      } catch (error) {
+        console.error("Error al obtener servicios:", error);
+        setServices([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (isEditMode && serviceId) {
-      const service = getService(serviceId);
-      console.log("Servicio obtenido para editar:", service);
+      const service = services.find((s) => s.service_id === serviceId);
       if (service) {
         methods.reset({
           name: service.name,
@@ -71,21 +94,9 @@ export default function ServiceForm({
   const onClickSave = methods.handleSubmit(async (data) => {
     try {
       setLoadingSave(true);
-
       if (isEditMode && serviceId) {
-        const transformedData: Service = data;
-        console.log(
-          "📤 Enviando a API:",
-          serviceId,
-          data.price,
-          typeof data.price,
-        );
-        //await serviceAPI.updateService(serviceId, transformedData.price);
-        //const resp = await serviceAPI.updateService(serviceId, data.price);
-        console.log("📥 Respuesta de API:", resp.data);
-        // Esperar que se actualice la lista desde API
-        //await refreshServices();
-
+        const transformedData: ServiceResponse = data;
+        await updateService(serviceId, transformedData);
         setMessage("¡Se ha actualizado con éxito!");
         setIsError(false);
         setFail(false);
@@ -106,15 +117,7 @@ export default function ServiceForm({
     try {
       setLoadingSave(true);
       const transformedData: ServiceRequest = data;
-
-      console.log(transformedData);
-      console.log("📤 Enviando a API:", transformedData);
-      //await serviceAPI.createService(transformedData);
-      console.log("✅ Creado en API");
-
-      console.log("🔄 Refrescando servicios...");
-      //await refreshServices();
-      console.log("✅ Servicios actualizados");
+      await createService(transformedData);
       setMessage("¡Se ha creado con éxito!");
       setIsError(false);
       setFail(false);
@@ -143,6 +146,14 @@ export default function ServiceForm({
     }
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <CircularProgress />
+      </div>
+    );
+  }
+
   return (
     <FormProvider {...methods}>
       <form
@@ -158,15 +169,29 @@ export default function ServiceForm({
         <div className="gap-10 mt-4 flex flex-row items-center justify-center">
           {!isEditMode &&
             (loadingSave ? (
-              <Progress />
+              <CircularProgress size={24} sx={{ color: "white" }} />
             ) : (
-              <CreationButton onClick={onClickCreate} text="Crear" />
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={onClickCreate}
+                className="md:w-[250px]"
+              >
+                Crear
+              </Button>
             ))}
           {isEditMode &&
             (loadingSave ? (
-              <Progress />
+              <CircularProgress size={24} sx={{ color: "white" }} />
             ) : (
-              <SaveButton onClick={onClickSave} text="Guardar" />
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={onClickSave}
+                className="md:w-[250px]"
+              >
+                Guardar
+              </Button>
             ))}
         </div>
       </form>

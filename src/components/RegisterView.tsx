@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "@/types/User";
 import { register } from "@/API/auth";
-import { UserAccountRequest } from "@/typesRequest/UserAccountRequest";
+import { RegisterUser } from "@/typesRequest/RegisterUser";
 import Box from "@mui/material/Box";
 import Steps from "@components/Steps";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Success from "@components/Success";
 import FormRegister from "@components/FormRegister";
 
@@ -17,9 +16,10 @@ export default function RegisterView() {
 
   const [open, setOpen] = useState(false);
 
-  const [userData, setUserData] = useState<User>();
+  const [userData, setUserData] = useState<RegisterUser>();
+  const [roleSelect, setRoleSelect] = useState<number>(0);
 
-  const handleNext = (data: User) => {
+  const handleNext = (data: RegisterUser) => {
     setUserData((prev) => ({ ...prev, ...data }));
     if (step < totalSteps - 1) setStep(step + 1);
   };
@@ -38,11 +38,38 @@ export default function RegisterView() {
 
   const navigate = useNavigate();
 
-  const formatUserAccount = (data: any): UserAccountRequest => {
+  const formatUserAccount = (data: any): RegisterUser => {
+    if (Number(data.role_id) === 2) {
+      return {
+        email: data.email,
+        password: data.password,
+        role_id: Number(data.role_id),
+        status: 1,
+
+        first_name: data.first_name,
+        last_name: data.last_name,
+        birthdate: data.birthdate,
+        gender: Number(data.gender),
+        occupation: Number(data.occupation),
+        marital_status: Number(data.marital_status),
+        education: Number(data.education),
+        phone: data.phone,
+        country_id: 1,
+
+        identification_number: data.identification_number,
+
+        specialty: data.specialty,
+        title: data.title,
+
+        created_by: "system",
+      };
+    }
     return {
-      role_id: Number(data.role_id),
       email: data.email,
       password: data.password,
+      role_id: Number(data.role_id),
+      status: 1,
+
       first_name: data.first_name,
       last_name: data.last_name,
       birthdate: data.birthdate,
@@ -50,11 +77,16 @@ export default function RegisterView() {
       occupation: Number(data.occupation),
       marital_status: Number(data.marital_status),
       education: Number(data.education),
-      person_type: "client",
+      phone: data.phone,
+      country_id: 1,
+
+      identification_number: data.identification_number,
+
+      created_by: "system",
     };
   };
 
-  const handleFinalSubmit = async (data: User) => {
+  const handleFinalSubmit = async (data: RegisterUser) => {
     const fullData = { ...userData, ...data };
     const userRegister = formatUserAccount(fullData);
     try {
@@ -65,11 +97,21 @@ export default function RegisterView() {
     }
   };
 
-  const stepsFields = [
-    { start: 0, end: 5 },
-    { start: 5, end: 9 },
-    { start: 9, end: 11 },
-  ];
+  let stepsFields = [];
+
+  if (roleSelect === 2) {
+    stepsFields = [
+      { start: 0, end: 6 },
+      { start: 6, end: 13 },
+      { start: 13, end: 16 },
+    ];
+  } else {
+    stepsFields = [
+      { start: 0, end: 6 },
+      { start: 6, end: 11 },
+      { start: 11, end: 13 },
+    ];
+  }
 
   return (
     <Box>
@@ -85,6 +127,7 @@ export default function RegisterView() {
             onBack={handleBack}
             onFinish={handleFinalSubmit}
             isLast={step === totalSteps - 1}
+            onRoleChange={setRoleSelect}
           />
         </Grid>
       </Grid>

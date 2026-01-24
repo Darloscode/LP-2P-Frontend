@@ -7,7 +7,7 @@ import { ServiceResponse } from "@/typesResponse/ServiceResponse";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
@@ -18,7 +18,7 @@ import Divider from "@mui/material/Divider";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import Success from "@components/Success";
 import { uploadToCloudinary } from "@/utils/utils";
-import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import apiURL from "@/API/apiConfig";
 import axios from "axios";
 import { AppointmentRequest } from "@/typesRequest/AppointmentRequest";

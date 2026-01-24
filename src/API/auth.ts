@@ -4,6 +4,7 @@ import { UserLogin } from "@/types/UserLogin";
 import { setAuthenticatedUser } from "@store";
 import { RegisterUser } from "@typesRequest/RegisterUser";
 import { PersonResponse } from "@/typesResponse/PersonResponse";
+import { ServiceRequest } from "@/typesRequest/ServiceRequest";
 
 export const login = async (email: string, password: string) => {
   const response = await axios.post(
@@ -73,5 +74,36 @@ export const fetchUsers = async () => {
     localStorage.setItem("persons", JSON.stringify(response.data));
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
+  }
+};
+
+export const createService = async (service: ServiceRequest) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.post(`${apiURL}/services`, service, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error("Error al agregar servicio:", error);
+    throw error;
+  }
+};
+
+export const updateService = async (
+  serviceId: number,
+  serviceUpdate: Partial<ServiceRequest>,
+) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.put(`${apiURL}/services/${serviceId}`, serviceUpdate, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error("Error al actualizar servicio:", error);
+    throw error;
   }
 };

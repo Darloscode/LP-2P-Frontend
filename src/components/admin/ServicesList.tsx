@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import { columnsServiceAdmin } from "@utils/columns";
 import { ServiceResponse } from "@/typesResponse/ServiceResponse";
 import axios from "axios";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SimpleHeader from "@components/SimpleHeader";
@@ -26,8 +25,8 @@ export default function ServicesList() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleEdit = (id: number, name: string) => {
-    const newPath = `${location.pathname}/${id}-${name}`;
+  const handleEdit = (id: number) => {
+    const newPath = `${location.pathname}/${id}`;
     navigate(newPath);
   };
 
@@ -36,7 +35,21 @@ export default function ServicesList() {
     navigate(newPath);
   };
 
-  const columnsExtra: GridColDef[] = [
+  const columns: GridColDef[] = [
+    {
+      field: "service_id",
+      headerName: "ID",
+      flex: 1,
+      disableColumnMenu: true,
+      resizable: false,
+    },
+    {
+      field: "name",
+      headerName: "Nombre",
+      flex: 2,
+      disableColumnMenu: true,
+      resizable: false,
+    },
     {
       field: "price",
       headerName: "Costo",
@@ -59,7 +72,7 @@ export default function ServicesList() {
       headerAlign: "center",
       renderCell: (params) => (
         <Button
-          onClick={() => handleEdit(params.row.service_id, params.row.name)}
+          onClick={() => handleEdit(params.row.service_id)}
           variant="text"
           className="boton-editar"
         >
@@ -68,8 +81,6 @@ export default function ServicesList() {
       ),
     },
   ];
-
-  const newColumns: GridColDef[] = [...columnsServiceAdmin, ...columnsExtra];
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -135,7 +146,7 @@ export default function ServicesList() {
         <Grid size={12}>
           {services.length ? (
             <Table<ServiceResponse>
-              columns={newColumns}
+              columns={columns}
               rows={services}
               getRowId={(row) => row.service_id}
               rowSelectionModel={rowSelection}

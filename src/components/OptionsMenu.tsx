@@ -33,6 +33,18 @@ export default function OptionsMenu() {
     navigate("/perfil");
   };
 
+  const handleAbout = () => {
+    navigate("/sobreAspy");
+  };
+
+  const handlePreference = () => {
+    navigate("/preferencias");
+  };
+
+  const handleContacts = () => {
+    navigate("/contacto");
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -67,7 +79,10 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleProfile}>Profile</MenuItem>
+        <MenuItem onClick={handleProfile}>Perfil</MenuItem>
+        <MenuItem onClick={handleAbout}>Sobre Aspy</MenuItem>
+        <MenuItem onClick={handleContacts}>Contactos</MenuItem>
+        <MenuItem onClick={handlePreference}>Preferencias</MenuItem>
         <MenuItem
           onClick={handleLogout}
           sx={{

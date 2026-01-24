@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { inputRegisterUserConfig } from "@/config/userFormRegister";
-import { User } from "@/types/User";
+import { RegisterUser } from "@/typesRequest/RegisterUser";
 import Button from "@mui/material/Button";
-import Input from "@components/Input";
+import { inputCreateUserAdminConfig } from "@/config/userFormAdminConfig";
+import UserInput from "./forms/UserInput";
 
 interface FormRegisterProps {
   start: number;
   end: number;
-  onNext: (data: User) => void;
+  onNext: (data: RegisterUser) => void;
   onBack: () => void;
-  onFinish: (data: User) => void;
+  onFinish: (data: RegisterUser) => void;
   isLast?: boolean;
+  onRoleChange?: (roleId: number) => void;
 }
 
 export default function FormRegister({
@@ -21,8 +22,9 @@ export default function FormRegister({
   onBack,
   onFinish,
   isLast,
+  onRoleChange,
 }: FormRegisterProps) {
-  const methods = useForm<User>();
+  const methods = useForm<RegisterUser>();
 
   useEffect(() => {
     methods.reset({
@@ -31,14 +33,26 @@ export default function FormRegister({
       email: "",
       birthdate: "",
       title: "",
-      about: "",
       specialty: "",
       role_id: 3,
     });
   }, [methods]);
 
-  const list_inputs = inputRegisterUserConfig.slice(start, end).map((input) => (
-    <Input
+  const roleSelect = Number(methods.watch("role_id") ?? 0);
+
+  useEffect(() => {
+    if (onRoleChange) {
+      onRoleChange(roleSelect);
+    }
+  }, [roleSelect]);
+
+  const filteredInputs = inputCreateUserAdminConfig.filter((input) => {
+    const isExtraField = ["title", "specialty"].includes(input.key);
+    return !(isExtraField && roleSelect !== 2);
+  });
+
+  const list_inputs = filteredInputs.slice(start, end).map((input) => (
+    <UserInput
       key={input.key}
       label={input.label}
       type={input.type}

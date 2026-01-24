@@ -1,6 +1,3 @@
-//import { provincias, ciudadesPorProvincia } from "./provincias-ciudad";
-//type ProvinceValue = number;
-
 export const inputCreateUserAdminConfig = [
   {
     label: "Nombre",

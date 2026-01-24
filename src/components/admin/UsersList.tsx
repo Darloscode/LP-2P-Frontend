@@ -8,7 +8,7 @@ import apiURL from "@/API/apiConfig";
 import axios from "axios";
 import SimpleHeader from "@components/SimpleHeader";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import ProfileView from "@components/ProfileView";
 import Stack from "@mui/material/Stack";
@@ -88,7 +88,7 @@ export default function UsersList() {
   useEffect(() => {
     if (rowSelection.length > 0) {
       const selectedUser = users.find(
-        (item) => item.person_id === rowSelection[0]
+        (item) => item.person_id === rowSelection[0],
       );
       if (selectedUser) {
         setUser(selectedUser);

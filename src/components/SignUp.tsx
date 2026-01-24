@@ -8,7 +8,6 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import AppTheme from "@shared-theme/AppTheme";
-import ColorModeSelect from "@shared-theme/ColorModeSelect";
 import RegisterView from "@components/RegisterView";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -120,7 +119,6 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: "fixed", top: "1rem", right: "1rem" }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined" className="card-register">
           <Typography
