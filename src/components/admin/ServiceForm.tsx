@@ -28,12 +28,13 @@ export default function ServiceForm({
   const [isError, setIsError] = useState(false);
   const [fail, setFail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false); // 🆕 Estado para la carga de datos en edición
   const [services, setServices] = useState<ServiceResponse[]>([]);
 
   const handleClose = () => {
     setOpen(false);
     if (!isError) {
-      navigate("/servicios"); // solo navegar si no hubo error
+      navigate("/servicios");
     }
   };
 
@@ -65,6 +66,7 @@ export default function ServiceForm({
 
   useEffect(() => {
     if (isEditMode && serviceId) {
+      setIsLoadingData(true); // 🆕 Activar carga mientras busca los datos
       const service = services.find((s) => s.service_id === serviceId);
       if (service) {
         methods.reset({
@@ -72,13 +74,14 @@ export default function ServiceForm({
           price: service.price,
         });
       }
+      setIsLoadingData(false); // 🆕 Desactivar carga cuando termine
     } else {
       methods.reset({
         name: "",
         price: 0,
       });
     }
-  }, [isEditMode, serviceId]);
+  }, [isEditMode, serviceId, services, methods]);
 
   const list_inputs = inputServiceConfig.map((input) => (
     <UserInput
@@ -90,7 +93,6 @@ export default function ServiceForm({
     />
   ));
 
-  // TODO in a diff file
   const onClickSave = methods.handleSubmit(async (data) => {
     try {
       setLoadingSave(true);
@@ -128,7 +130,6 @@ export default function ServiceForm({
         const errors = error.response.data?.errors;
 
         if (errors?.name?.length) {
-          // Nombre ya registrado
           setMessage(`⚠ Este servicio ya ha sido registrado`);
           setFail(true);
           setIsError(true);
@@ -142,11 +143,21 @@ export default function ServiceForm({
         setOpen(true);
       }
     } finally {
-      setLoadingSave(false); // Termina la bolita de cargando
+      setLoadingSave(false);
     }
   });
 
+  // 🆕 Mostrar loading mientras carga la lista inicial de servicios
   if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  // 🆕 Mostrar loading mientras carga los datos en modo edición
+  if (isLoadingData) {
     return (
       <div className="flex justify-center items-center h-full">
         <CircularProgress />

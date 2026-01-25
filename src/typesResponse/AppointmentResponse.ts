@@ -41,11 +41,6 @@ export type AppointmentResponse = {
     file: string;
   };
 
-  report: {
-    appointment_report_id: number;
-    file: string;
-  } | null;
-
   scheduled_by: {
     person_id: number;
     first_name: string;

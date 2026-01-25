@@ -29,7 +29,6 @@ export type UserAccountResponse = {
     occupation: string | null;
     marital_status: string | null;
     education: string | null;
-    country: string | null;
   } | null;
 
   /** Cliente (solo ID, puede ser null) */

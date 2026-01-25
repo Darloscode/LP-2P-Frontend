@@ -15,7 +15,6 @@ export type RegisterUser = {
   marital_status: number;
   education: number;
   phone: string;
-  country_id?: number;
 
   // Identification
   identification_number: string;

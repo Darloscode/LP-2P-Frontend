@@ -62,7 +62,6 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
         marital_status: Number(data.marital_status),
         education: Number(data.education),
         phone: data.phone,
-        country_id: 1,
 
         identification_number: data.identification_number,
 
@@ -86,7 +85,6 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       marital_status: Number(data.marital_status),
       education: Number(data.education),
       phone: data.phone,
-      country_id: 1,
 
       identification_number: data.identification_number,
 
@@ -110,7 +108,6 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
         marital_status: Number(data.marital_status),
         education: Number(data.education),
         phone: data.phone,
-        country_id: 1,
 
         identification_number: data.identification_number,
 
@@ -134,7 +131,6 @@ export default function FormViewAdmin({ isEdit, user_id }: FormViewProps) {
       marital_status: Number(data.marital_status),
       education: Number(data.education),
       phone: data.phone,
-      country_id: 1,
 
       identification_number: data.identification_number,
 

@@ -3,7 +3,6 @@ import apiURL from "./apiConfig";
 import { UserLogin } from "@/types/UserLogin";
 import { setAuthenticatedUser } from "@store";
 import { RegisterUser } from "@typesRequest/RegisterUser";
-import { PersonResponse } from "@/typesResponse/PersonResponse";
 import { ServiceRequest } from "@/typesRequest/ServiceRequest";
 
 export const login = async (email: string, password: string) => {
@@ -38,8 +37,7 @@ export const StoreUser = async () => {
 export const register = async (userRegister: RegisterUser) => {
   try {
     await axios.post(`${apiURL}/register`, userRegister);
-  } catch (error) {
-    console.error("Error al agregar persona:", error);
+  } catch (error: any) {
     throw error;
   }
 };

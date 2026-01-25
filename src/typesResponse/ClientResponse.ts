@@ -14,7 +14,6 @@ export type ClientResponse = {
     gender: string;
     identification: string;
     phone: string;
-    country: string;
     marital_status: string;
     occupation: string;
     education: string;

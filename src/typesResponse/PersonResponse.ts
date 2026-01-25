@@ -21,19 +21,6 @@ export type PersonResponse = {
     status: string;
   };
 
-  country?: {
-    country_id: number | null;
-    name: string | null;
-    state: {
-      state_id: number | null;
-      name: string | null;
-      city: {
-        city_id: number | null;
-        name: string | null;
-      };
-    };
-  };
-
   /** Client | Professional | Staff | null */
   type: "Client" | "Professional" | "Staff" | null;
 

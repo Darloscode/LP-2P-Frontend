@@ -37,16 +37,11 @@ export default function SignInCard() {
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
-  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false); // Estado de carga
   const navigate = useNavigate();
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const loginUser = async () => {
     try {

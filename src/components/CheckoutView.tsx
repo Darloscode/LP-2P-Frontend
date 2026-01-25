@@ -95,8 +95,6 @@ export default function CheckoutView() {
             Accept: "application/json",
           },
         });
-
-        console.log("Appointment created successfully");
         setActiveStep(activeStep + 1);
         setOpen(true);
       } catch (error) {
