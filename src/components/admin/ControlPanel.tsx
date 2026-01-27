@@ -14,16 +14,16 @@ export default function ControlPanel() {
   const navigate = useNavigate();
 
   const handleCreateUser = () => {
-    const newPath = `/nuevo-cliente`;
+    const newPath = `/nuevo-cliente`; //Dirección para crear nuevo usuario
     navigate(newPath);
   };
 
   const handleCreateService = () => {
-    const newPath = `/nuevo-servicio`;
+    const newPath = `/nuevo-servicio`; //Dirección para crear nuevo servicio
     navigate(newPath);
   };
 
-  const botones: ButtonControl[] = [
+  const botones: ButtonControl[] = [ //Botones de acción en clase principal
     {
       text: "Agregar Usuario",
       icon: <AccountCircleOutlinedIcon className="boton-panelcontrol" />,

@@ -21,19 +21,19 @@ export default function MainGrid() {
     const fetchAppointments = async () => {
       const token = localStorage.getItem("token");
       try {
-        const responseAppointments = await axios.get(`${apiURL}/appointments`, {
+        const responseAppointments = await axios.get(`${apiURL}/appointments`, { //Hago get de todas las citas
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        const responsePayments = await axios.get(`${apiURL}/payments`, {
+        const responsePayments = await axios.get(`${apiURL}/payments`, { //Hago get de todos los pagos
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        const responseUserAccount = await axios.get(`${apiURL}/users`, {
+        const responseUserAccount = await axios.get(`${apiURL}/users`, { //Hago get de todas las cuentas de usuarios creadas
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -47,7 +47,7 @@ export default function MainGrid() {
         const incomeData: number[] = getIncome(responsePayments.data);
         setIncome(incomeData);
 
-        const cardData: StatCardProps[] = getDataCard(
+        const cardData: StatCardProps[] = getDataCard( //Crea lso SatCards de cuentas creadas y citas
           responseUserAccount.data,
           responseAppointments.data,
         );
@@ -64,6 +64,8 @@ export default function MainGrid() {
     return <div>Loading...</div>;
   }
 
+  //SessionsChart es el gráfico lineal de ingresos
+  // PageViewsBarChart es el gráfico de barras de citas asistidas
   return (
     <Box
       sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}
@@ -81,7 +83,7 @@ export default function MainGrid() {
           </Grid>
         ))}
         <Grid size={{ xs: 12, md: 6 }}>
-          <SessionsChart income={income} />
+          <SessionsChart income={income} /> 
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart {...dataAppointment} />
