@@ -11,10 +11,12 @@ import { ServiceRequest } from "@/typesRequest/ServiceRequest";
 import axios from "axios";
 import { createService, updateService } from "@/API/auth";
 import apiURL from "@/API/apiConfig";
-
+/*
+Formulario de creación y edición de servicios
+*/
 interface ServiceFormProps {
-  isEditMode: boolean;
-  serviceId?: number;
+  isEditMode: boolean; //Define si el formulario debe comportarse como edición o creación
+  serviceId?: number; //El id del servicio a editar, si es que aplica
 }
 
 export default function ServiceForm({
@@ -41,12 +43,13 @@ export default function ServiceForm({
   const methods = useForm<ServiceResponse>();
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true); // Activar carga mientras busca los datos
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token"); 
 
         const response = await axios.get(`${apiURL}/services`, {
+          //Hace un get de los servicios disponibles
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -65,16 +68,16 @@ export default function ServiceForm({
   }, []);
 
   useEffect(() => {
-    if (isEditMode && serviceId) {
-      setIsLoadingData(true); // 🆕 Activar carga mientras busca los datos
-      const service = services.find((s) => s.service_id === serviceId);
+    if (isEditMode && serviceId) { //Si es que el formulario está en modo edicion
+      setIsLoadingData(true); // Activar carga mientras busca los datos
+      const service = services.find((s) => s.service_id === serviceId); //Busca el servicio a editar
       if (service) {
-        methods.reset({
+        methods.reset({ //Deja los datos vacios para poder cambiarlos a los deseados
           name: service.name,
           price: service.price,
         });
       }
-      setIsLoadingData(false); // 🆕 Desactivar carga cuando termine
+      setIsLoadingData(false); // Desactivar carga cuando termine
     } else {
       methods.reset({
         name: "",
@@ -98,8 +101,7 @@ export default function ServiceForm({
       setLoadingSave(true);
       if (isEditMode && serviceId) {
         const transformedData: ServiceResponse = data;
-        await updateService(serviceId, transformedData);
-        setMessage("¡Se ha actualizado con éxito!");
+        await updateService(serviceId, transformedData); //Envia el nuevo servicio modificado
         setIsError(false);
         setFail(false);
         setOpen(true);
@@ -119,7 +121,7 @@ export default function ServiceForm({
     try {
       setLoadingSave(true);
       const transformedData: ServiceRequest = data;
-      await createService(transformedData);
+      await createService(transformedData); //Envia el nuevo servicio modificado
       setMessage("¡Se ha creado con éxito!");
       setIsError(false);
       setFail(false);
@@ -147,7 +149,7 @@ export default function ServiceForm({
     }
   });
 
-  // 🆕 Mostrar loading mientras carga la lista inicial de servicios
+  // Mostrar loading mientras carga la lista inicial de servicios
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -156,7 +158,7 @@ export default function ServiceForm({
     );
   }
 
-  // 🆕 Mostrar loading mientras carga los datos en modo edición
+  // Mostrar loading mientras carga los datos en modo edición
   if (isLoadingData) {
     return (
       <div className="flex justify-center items-center h-full">
