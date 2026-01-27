@@ -22,11 +22,11 @@ export default function ServicesList() {
   const [services, setServices] = useState<ServiceResponse[]>([]);
 
   //Ruta para editar y crear
-  const navigate = useNavigate();
+  const navigate = useNavigate(); //Para poderse mover entre pantallas sin tener que recargarla
   const location = useLocation();
 
   const handleEdit = (id: number) => {
-    const newPath = `${location.pathname}/${id}`;
+    const newPath = `${location.pathname}/${id}`; //ruta dinámica del servicio a actualizar
     navigate(newPath);
   };
 
@@ -35,7 +35,7 @@ export default function ServicesList() {
     navigate(newPath);
   };
 
-  const columns: GridColDef[] = [
+  const columns: GridColDef[] = [ //define como se mostraran las columnas
     {
       field: "service_id",
       headerName: "ID",
@@ -57,7 +57,7 @@ export default function ServicesList() {
       disableColumnMenu: true,
       resizable: false,
       renderCell: (params) => {
-        return <Typography variant="body1">$ {params.value}</Typography>;
+        return <Typography variant="body1">$ {params.value}</Typography>; //Para ponerle el $ antes del valor
       },
     },
     {
@@ -82,7 +82,7 @@ export default function ServicesList() {
     },
   ];
 
-  useEffect(() => {
+  useEffect(() => { //Hace un get de los servicios disponibles
     const fetchAppointments = async () => {
       const token = localStorage.getItem("token");
       try {
