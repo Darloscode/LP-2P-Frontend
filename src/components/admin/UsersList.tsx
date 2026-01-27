@@ -116,7 +116,7 @@ export default function UsersList() {
   }, [rowSelection]);
 
   const handleCreate = () => {
-    navigate(`/nuevo-usuario`);
+    navigate(`/nuevo-cliente`);
   };
 
   if (users.length === 0) {

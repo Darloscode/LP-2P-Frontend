@@ -2,7 +2,7 @@
 export type UserLogin = {
   user_account_id: number;
   email: string;
-  last_login: string; // ISO datetime
+  last_login: string;
 
   person: {
     person_id: number;

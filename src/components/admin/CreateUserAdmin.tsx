@@ -15,7 +15,7 @@ export default function CreateUserAdmin() {
       <Grid container spacing={2}>
         <Grid size={12} className="grid-p-patients-tittle">
           <Header
-            textHeader={"Crear Usuario Admin"}
+            textHeader={"Crear cliente"}
             isCreate={false}
             handle={handleBack}
           />

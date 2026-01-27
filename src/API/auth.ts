@@ -6,33 +6,55 @@ import { RegisterUser } from "@typesRequest/RegisterUser";
 import { ServiceRequest } from "@/typesRequest/ServiceRequest";
 
 export const login = async (email: string, password: string) => {
-  const response = await axios.post(
-    `${apiURL}/login`,
-    { email, password },
-    { headers: { "Content-Type": "application/json" } },
-  );
-
-  if (!response) {
-    throw new Error("Credenciales incorrectas");
+  try {
+    const response = await axios.post(
+      `${apiURL}/login`,
+      { email, password },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    if (!response) {
+      throw new Error("Credenciales incorrectas");
+    }
+    const data = response.data;
+    localStorage.setItem("token", data.token);
+    await StoreUser();
+    return data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(
+        error.response.data?.message || "Error al iniciar sesión"
+      );
+    }
+    throw new Error(error.message || "Error inesperado");
   }
-  const data = response.data;
-  localStorage.setItem("token", data.token);
-  await StoreUser();
-  return data;
 };
+
 
 export const StoreUser = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("Token no encontrado");
-  const response = await axios.get(`${apiURL}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const userLogin: UserLogin = response.data;
-  setAuthenticatedUser(userLogin);
-  return userLogin;
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token no encontrado");
+
+    const response = await axios.get(`${apiURL}/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const userLogin: UserLogin = response.data;
+    setAuthenticatedUser(userLogin);
+    return userLogin;
+
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(
+        error.response.data?.message || "Error al obtener el usuario autenticado"
+      );
+    }
+    throw new Error(error.message || "Error inesperado");
+  }
 };
+
 
 export const register = async (userRegister: RegisterUser) => {
   try {

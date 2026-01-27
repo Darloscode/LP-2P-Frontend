@@ -14,7 +14,7 @@ export default function ControlPanel() {
   const navigate = useNavigate();
 
   const handleCreateUser = () => {
-    const newPath = `/nuevo-usuario`;
+    const newPath = `/nuevo-cliente`;
     navigate(newPath);
   };
 

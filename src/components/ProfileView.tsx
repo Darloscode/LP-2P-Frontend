@@ -15,7 +15,7 @@ export default function ProfileView({ user, isRowPosition }: ProfileProps) {
 
   const handleEdit = async () => {
     await fetchUsers();
-    navigate(`/editar/${user.person_id}`);
+    navigate(`/editar-cliente/${user.person_id}`);
   };
 
   return (

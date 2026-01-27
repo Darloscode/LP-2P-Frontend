@@ -14,12 +14,12 @@ import CheckoutView from "@/components/CheckoutView";
 export const AdminRoutes = [
   { path: "/", element: <ControlPanel /> },
   { path: "/perfil", element: <Profile /> },
-  { path: "/editar/:id", element: <EditUserAdmin /> },
+  { path: "/editar-cliente/:id", element: <EditUserAdmin /> },
   { path: "/usuarios", element: <UsersList /> },
   { path: "/servicios", element: <ServicesList /> },
   { path: "/servicios/:id", element: <EditService /> },
   { path: "/nuevo-servicio", element: <CreateService /> },
-  { path: "/nuevo-usuario", element: <CreateUserAdmin /> },
+  { path: "/nuevo-cliente", element: <CreateUserAdmin /> },
   { path: "/citas", element: <Appointment /> },
   { path: "/nueva-cita", element: <AppointmentView /> },
   {

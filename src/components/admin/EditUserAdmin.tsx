@@ -18,7 +18,7 @@ export default function EditUserAdmin() {
       <Grid container spacing={2}>
         <Grid size={12} className="grid-p-patients-tittle">
           <Header
-            textHeader={"Editar Usuario"}
+            textHeader={"Editar cliente"}
             isCreate={false}
             handle={handleBack}
           />
